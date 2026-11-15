@@ -1,0 +1,23 @@
+const express = require("express");
+const router = express.Router();
+const quotesController = require("../controllers/quotesController");
+const authMiddleware = require("../middlewares/authMiddleware");
+const {
+  validateLoad,
+  validateQuote,
+} = require("../middlewares/validationMiddleware");
+
+router.use(authMiddleware);
+
+// Quotes CRUD
+router.get("/", quotesController.listForUser);
+router.post("/", validateQuote, quotesController.createQuote);
+router.get("/:id", quotesController.getQuote);
+router.put("/:id", validateQuote, quotesController.updateQuote);
+router.delete("/:id", quotesController.deleteQuote);
+
+// Loads
+router.post("/:quoteId/loads", validateLoad, quotesController.addLoad);
+router.delete("/:quoteId/loads/:loadId", quotesController.deleteLoad);
+
+module.exports = router;
